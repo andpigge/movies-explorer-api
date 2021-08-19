@@ -1,0 +1,2 @@
+// Постоянно забываю. Создание секретного ключа для .env
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'));"
