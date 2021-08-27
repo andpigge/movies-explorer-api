@@ -2,12 +2,12 @@
 const router = require('express').Router();
 
 // Контроллеры
+const { celebrate, Joi } = require('celebrate');
 const { getProfile, updateProfile } = require('../controllers/users');
 
 // Валидация тела запроса от клиента
-const { celebrate, Joi } = require('celebrate');
 
-router.get('/me',getProfile);
+router.get('/me', getProfile);
 router.patch(
   '/me',
   celebrate({

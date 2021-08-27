@@ -9,8 +9,8 @@ const Forbidden = require('../errorsHandler/Forbidden');
 const createMovie = (req, res, next) => {
   const body = { ...req.body };
 
-  // const id = req.user._id;
-  const id = '6127739df86eb7311813699e';
+  const id = req.user._id;
+  // const id = '6128d0b6f36a6d63dc79070e';
 
   Movie.create({ ...body, owner: id })
     .then((movie) => {
@@ -30,18 +30,19 @@ const getMovie = (req, res, next) => {
     .populate('user')
     .then((movies) => res.send(movies))
     .catch((err) => next(err.message));
-}
+};
 
 const deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
 
-  // const id = req.user._id;
-  const id = '6127739df86eb7311813699e';
+  const id = req.user._id;
+  // const id = '6128d0b6f36a6d63dc79070e';
 
   Movie.findById(movieId)
     .then((movie) => {
       if (!movie) {
-        return next(new NotFoundError('Фильм не существует, либо был удален'));
+        // Здесь бы return, но eslint не позволяет. В консоле поэтому owner null выводится
+        next(new NotFoundError('Фильм не существует, либо был удален'));
       }
 
       // Если это карточка пользователя, удалим ее
@@ -63,7 +64,7 @@ const deleteMovie = (req, res, next) => {
       if (err.name === 'CastError') {
         return next(new BadRequest('Фильм с указанным _id не найден'));
       }
-      return next(err.message)
+      return next(err.message);
     });
 };
 

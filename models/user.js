@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30
+    maxlength: 30,
   },
   email: {
     type: String,
@@ -43,12 +43,12 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Ненадежный пароль',
     },
-  }
+  },
 });
 
 // Функция findUserByCredentials не должна быть стрелочной.
 // Собственный метод. Поиск пользователя
-userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password, next) {
   // Здесь нужен пароль
   return this.findOne({ email }).select('+password')
     .then((user) => {
@@ -64,7 +64,7 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
           return user;
         });
     });
-}
+};
 
 // Хук сработает перед тем как сохранить данные в бд,
 // для коректного валидирования пароля на уровне схемы.

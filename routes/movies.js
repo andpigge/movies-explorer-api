@@ -2,14 +2,14 @@
 const router = require('express').Router();
 
 // Контроллеры
+const { celebrate, Joi } = require('celebrate');
 const {
   createMovie,
   getMovie,
-  deleteMovie
+  deleteMovie,
 } = require('../controllers/movies');
 
 // Валидация тела запроса от клиента
-const { celebrate, Joi } = require('celebrate');
 
 // Подключаю свою функцию валидации url адресса для celebrate
 const validUrl = require('../utils/validUrl');
@@ -31,8 +31,7 @@ router.post('/',
       nameEN: Joi.string().required(),
     }),
   }),
-  createMovie,
-);
+  createMovie);
 router.delete(
   '/:movieId',
   celebrate({

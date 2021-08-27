@@ -1,7 +1,7 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 // Нужен для создания токена
-const jwt = require('jsonwebtoken');
 
 const { NODE_ENV, JWT_SECRET = 'dev-secret' } = process.env;
 
@@ -39,13 +39,14 @@ const logIn = (req, res, next) => {
   const { email, password } = req.body;
 
   // Применил собственный метод
-  User.findUserByCredentials(email, password)
+  User.findUserByCredentials(email, password, next)
     .then((user) => {
       // jwt.sign - создать токен. Первый параметр id, для хэша, второй токен, третий время жизни
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-        { expiresIn: '7d' });
+        { expiresIn: '7d' },
+      );
 
       return res.send(token);
     })
@@ -55,12 +56,12 @@ const logIn = (req, res, next) => {
       }
       return next(err.message);
     });
-}
+};
 // *
 
 const getProfile = (req, res, next) => {
   const id = req.user._id;
-  // const id = '6127739df86eb7311813699e';
+  // const id = '6128d0b6f36a6d63dc79070e';
 
   User.findById(id)
     .then((user) => {
@@ -70,19 +71,19 @@ const getProfile = (req, res, next) => {
           name: user.name,
         });
       }
-      throw new next(new NotFoundError('Пользователь не существует, либо был удален'));
+      return next(new NotFoundError('Пользователь не существует, либо был удален'));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(new BadRequest('Пользователь не существует, либо был удален'));
       }
-      return next(err.message)
+      return next(err.message);
     });
 };
 
 const updateProfile = (req, res, next) => {
   const id = req.user._id;
-  // const id = '6127739df86eb7311813699e';
+  // const id = '6128d0b6f36a6d63dc79070e';
 
   const { email, name } = req.body;
 
@@ -91,28 +92,30 @@ const updateProfile = (req, res, next) => {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
       // upsert: false // если пользователь не найден, он будет создан
-    }
-  )
-  .then(({ email, name }) => {
-    res.send({ email, name });
-  })
-  .catch((err) => {
-    if (err.name === 'ValidationError') {
-      return next(new BadRequest('Переданы некорректные данные при обновлении профиля'));
-    }
-    if (err.name === 'CastError') {
-      return next(new BadRequest('Запрашиваемый пользователь не найден'));
-    }
-    if (err.name === 'MongoError') {
-      return next(new Conflict('Пользователь с таким Email уже существует'));
-    }
-    return next(err.message);
-  });
+    })
+    .then((user) => {
+      res.send({
+        email: user.email,
+        name: user.name,
+      });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(new BadRequest('Переданы некорректные данные при обновлении профиля'));
+      }
+      if (err.name === 'CastError') {
+        return next(new BadRequest('Запрашиваемый пользователь не найден'));
+      }
+      if (err.name === 'MongoError') {
+        return next(new Conflict('Пользователь с таким Email уже существует'));
+      }
+      return next(err.message);
+    });
 };
 
 module.exports = {
   createUser,
   logIn,
   getProfile,
-  updateProfile
+  updateProfile,
 };
