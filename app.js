@@ -54,7 +54,7 @@ app.use(requestLogger);
 app.use(limiter);
 
 // routes
-app.use(routerApp);
+app.use('/api', routerApp);
 
 // Логгер ошибок. Подключаю после всех маршрутов, но до обработки ошибок
 app.use(errorLoger);
