@@ -3,13 +3,11 @@ const mongoose = require('mongoose');
 // Простой пакет для валидации данных
 const validator = require('validator');
 
-const validationUrl = () => {
-    return validate = {
-      validator(url) {
-        return validator.isURL(url);
-      },
-      message: 'Неккоректный url адрес',
-    }
+const validationUrl = validate = {
+  validator(url) {
+    return validator.isURL(url);
+  },
+  message: 'Неккоректный url адрес',
 };
 
 const movieSchema = new mongoose.Schema({
@@ -36,17 +34,17 @@ const movieSchema = new mongoose.Schema({
   image: {
     type: String,
     required: true,
-    validationUrl()
+    validationUrl,
   },
   trailer: {
     type: String,
     required: true,
-    validationUrl()
+    validationUrl,
   },
   thumbnail: {
     type: String,
     required: true,
-    validationUrl()
+    validationUrl,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
