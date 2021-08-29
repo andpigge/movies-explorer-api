@@ -19,6 +19,12 @@ app.use(helmet());
 const limiter = require('./utils/limiter');
 //*
 
+//* Конфигурация
+const config = require('./utils/movies.config');
+
+const { NODE_ENV, MONGO_DB_URL } = process.env;
+//*
+
 // Логи ошибок, запись ошибок в файл
 const { requestLogger, errorLoger } = require('./middlewares/logger');
 
@@ -36,8 +42,9 @@ const routerApp = require('./routes/index');
 const { PORT = 3000 } = process.env;
 
 // Подключение к БД
+const dbUrl = NODE_ENV === 'production' ? MONGO_DB_URL : config.dbUrlDev;
 // options отвечают за обновление mongoose
-mongoose.connect('mongodb://localhost:27017/moviesdb', {
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,

@@ -3,7 +3,11 @@ const User = require('../models/user');
 
 // Нужен для создания токена
 
+//* Конфигурация
+const config = require('../utils/movies.config');
+
 const { NODE_ENV, JWT_SECRET = 'dev-secret' } = process.env;
+//*
 
 // Ошибки
 const BadRequest = require('../errorsHandler/BadRequest');
@@ -44,7 +48,7 @@ const logIn = (req, res, next) => {
       // jwt.sign - создать токен. Первый параметр id, для хэша, второй токен, третий время жизни
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        NODE_ENV === 'production' ? JWT_SECRET : config.jwtSecretDev,
         { expiresIn: '7d' },
       );
 
