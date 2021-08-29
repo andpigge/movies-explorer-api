@@ -1,29 +1,20 @@
 const mongoose = require('mongoose');
 const express = require('express');
 
-const app = express();
-
 // dotenv позволяет писать конструкции
 require('dotenv').config();
 
 // Обработка ошибок в routes
 const { errors } = require('celebrate');
 
-//* Защита приложения
 // Защита заголовков
 const helmet = require('helmet');
 
-app.use(helmet());
-
 // Зашитится от автоматических входов
 const limiter = require('./utils/limiter');
-//*
 
-//* Конфигурация
+// Конфигурация
 const config = require('./utils/movies.config');
-
-const { NODE_ENV, MONGO_DB_URL } = process.env;
-//*
 
 // Логи ошибок, запись ошибок в файл
 const { requestLogger, errorLoger } = require('./middlewares/logger');
@@ -34,10 +25,13 @@ const errHandler = require('./middlewares/errHandler');
 // Мидлвэа, обработчика CORS
 // const handlerCors = require('./middlewares/handlerCors');
 
-// app.use(handlerCors);
-
 // routes
 const routerApp = require('./routes/index');
+
+const { NODE_ENV, MONGO_DB_URL } = process.env;
+
+// CORS
+// app.use(handlerCors);
 
 const { PORT = 3000 } = process.env;
 
@@ -50,6 +44,10 @@ mongoose.connect(dbUrl, {
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
+
+const app = express();
+
+app.use(helmet());
 
 // Подключение встроенного парсера в express, чтобы вытаскивать из тела данные
 app.use(express.json());
