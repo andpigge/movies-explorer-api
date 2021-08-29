@@ -81,7 +81,7 @@ const logIn = (req, res, next) => {
 
 const getProfile = (req, res, next) => {
   const id = req.user._id;
-  // const id = '6128d0b6f36a6d63dc79070e';
+  // const id = '612b657497f4ab1e90773770';
 
   User.findById(id)
     .then((user) => {
@@ -103,7 +103,7 @@ const getProfile = (req, res, next) => {
 
 const updateProfile = (req, res, next) => {
   const id = req.user._id;
-  // const id = '6128d0b6f36a6d63dc79070e';
+  // const id = '612b657497f4ab1e90773770';
 
   const { email, name } = req.body;
 

@@ -13,7 +13,7 @@ const routerMovies = require('./movies');
 
 router.use('/', routerAuth);
 router.use('/users', auth, routerUsers);
-router.use('/movies', auth, routerMovies);
+router.use('/movies', /* auth */ routerMovies);
 // Если нет корректного маршрута
 router.use(auth, (req, res, next) => next(new NotFoundError('Запрашиваемый ресурс не найден')));
 

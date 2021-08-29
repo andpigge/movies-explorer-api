@@ -36,8 +36,8 @@ const createMovieJoi = celebrate({
 });
 
 const deleteMovieJoi = celebrate({
-  body: Joi.object().keys({
-    movieId: Joi.number().required(),
+  params: Joi.object().keys({
+    movieId: Joi.string().hex().length(24),
   }),
 });
 

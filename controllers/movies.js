@@ -22,8 +22,8 @@ const {
 const createMovie = (req, res, next) => {
   const body = { ...req.body };
 
-  const id = req.user._id;
-  // const id = '6128d0b6f36a6d63dc79070e';
+  // const id = req.user._id;
+  const id = '612b657497f4ab1e90773770';
 
   Movie.create({ ...body, owner: id })
     .then((movie) => {
@@ -48,8 +48,8 @@ const getMovie = (req, res, next) => {
 const deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
 
-  const id = req.user._id;
-  // const id = '6128d0b6f36a6d63dc79070e';
+  // const id = req.user._id;
+  const id = '612b657497f4ab1e90773770';
 
   Movie.findById(movieId)
     .then((movie) => {
