@@ -14,4 +14,6 @@ const errorMessage = {
   },
 };
 
-module.exports = errorMessage;
+module.exports = {
+  errorMessage,
+};

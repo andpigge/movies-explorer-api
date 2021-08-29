@@ -54,20 +54,19 @@ const deleteMovie = (req, res, next) => {
   Movie.findById(movieId)
     .then((movie) => {
       if (!movie) {
-        // Здесь бы return, но eslint не позволяет. В консоле поэтому owner null выводится
-        next(new NotFoundError(movieNotExists));
+        // Круто. Спасибо. Оставлю на будущее return чтоб подсматреть
+        return next(new NotFoundError(movieNotExists));
+        // return;
       }
 
+      // То что нужно. Спасибо
+      return movie;
+    })
+    .then((movie) => {
       // Если это карточка пользователя, удалим ее
       if (movie.owner.toString() === id) {
         Movie.findByIdAndRemove(movieId)
-          .then((movieRemove) => res.send(movieRemove))
-          .catch((err) => {
-            if (err.name === 'CastError') {
-              return next(new BadRequest(movieByIdNotFound));
-            }
-            return next(err.message);
-          });
+          .then((movieRemove) => res.send(movieRemove));
       } else {
         // Если это карточка не пользователя, выведем ему сообщение
         next(new Forbidden(movieAnotherUserNotDelete));

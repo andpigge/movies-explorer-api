@@ -66,7 +66,9 @@ const logIn = (req, res, next) => {
         { expiresIn: '7d' },
       );
 
-      return res.send(token);
+      // В res.send переданное значение должно быть типа объект.
+      // Иначе express вернет тип text/html для переданого значения
+      return res.send({ token });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
