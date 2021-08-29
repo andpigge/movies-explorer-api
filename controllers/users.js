@@ -14,6 +14,20 @@ const BadRequest = require('../errorsHandler/BadRequest');
 const Conflict = require('../errorsHandler/Conflict');
 const NotFoundError = require('../errorsHandler/NotFoundError');
 
+//* Сообщения ошибок
+const { errorMessage } = require('../utils/constants');
+
+const {
+  users: {
+    invalidDataСreatingUser,
+    userExistsEmail,
+    invalidDataUpdatingProfile,
+    userNotExists,
+    userNotFound,
+  },
+} = errorMessage;
+//*
+
 // * Аутентификация и авторизация
 const createUser = (req, res, next) => {
   const body = { ...req.body };
@@ -29,11 +43,11 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequest('Переданы некорректные данные при создании пользователя'));
+        return next(new BadRequest(invalidDataСreatingUser));
       }
       // err.name = MongoError и err.code = 11000
       if (err.name === 'MongoError') {
-        return next(new Conflict('Пользователь с таким Email уже существует'));
+        return next(new Conflict(userExistsEmail));
       }
       return next(err.message);
     });
@@ -56,7 +70,7 @@ const logIn = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequest('Переданы некорректные данные при создании пользователя'));
+        return next(new BadRequest(invalidDataСreatingUser));
       }
       return next(err.message);
     });
@@ -75,11 +89,11 @@ const getProfile = (req, res, next) => {
           name: user.name,
         });
       }
-      return next(new NotFoundError('Пользователь не существует, либо был удален'));
+      return next(new NotFoundError(userNotExists));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequest('Пользователь не существует, либо был удален'));
+        return next(new BadRequest(userNotExists));
       }
       return next(err.message);
     });
@@ -105,13 +119,13 @@ const updateProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequest('Переданы некорректные данные при обновлении профиля'));
+        return next(new BadRequest(invalidDataUpdatingProfile));
       }
       if (err.name === 'CastError') {
-        return next(new BadRequest('Запрашиваемый пользователь не найден'));
+        return next(new BadRequest(userNotFound));
       }
       if (err.name === 'MongoError') {
-        return next(new Conflict('Пользователь с таким Email уже существует'));
+        return next(new Conflict(userExistsEmail));
       }
       return next(err.message);
     });

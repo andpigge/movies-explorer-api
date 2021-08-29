@@ -6,6 +6,19 @@ const NotFoundError = require('../errorsHandler/NotFoundError');
 const BadRequest = require('../errorsHandler/BadRequest');
 const Forbidden = require('../errorsHandler/Forbidden');
 
+//* Сообщения ошибок
+const { errorMessage } = require('../utils/constants');
+
+const {
+  movies: {
+    invalidDataСreatingMovie,
+    movieNotExists,
+    movieByIdNotFound,
+    movieAnotherUserNotDelete,
+  },
+} = errorMessage;
+//*
+
 const createMovie = (req, res, next) => {
   const body = { ...req.body };
 
@@ -18,7 +31,7 @@ const createMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные при создании карточки'));
+        next(new BadRequest(invalidDataСreatingMovie));
       }
       next(err.message);
     });
@@ -42,7 +55,7 @@ const deleteMovie = (req, res, next) => {
     .then((movie) => {
       if (!movie) {
         // Здесь бы return, но eslint не позволяет. В консоле поэтому owner null выводится
-        next(new NotFoundError('Фильм не существует, либо был удален'));
+        next(new NotFoundError(movieNotExists));
       }
 
       // Если это карточка пользователя, удалим ее
@@ -51,18 +64,18 @@ const deleteMovie = (req, res, next) => {
           .then((movieRemove) => res.send(movieRemove))
           .catch((err) => {
             if (err.name === 'CastError') {
-              return next(new BadRequest('Фильм с указанным _id не найден'));
+              return next(new BadRequest(movieByIdNotFound));
             }
             return next(err.message);
           });
       } else {
         // Если это карточка не пользователя, выведем ему сообщение
-        next(new Forbidden('Нельзя удалить сохраненный фильм другого пользователя'));
+        next(new Forbidden(movieAnotherUserNotDelete));
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequest('Фильм с указанным _id не найден'));
+        return next(new BadRequest(movieByIdNotFound));
       }
       return next(err.message);
     });
