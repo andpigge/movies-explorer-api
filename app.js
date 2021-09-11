@@ -23,15 +23,12 @@ const { requestLogger, errorLoger } = require('./middlewares/logger');
 const errHandler = require('./middlewares/errHandler');
 
 // Мидлвэа, обработчика CORS
-// const handlerCors = require('./middlewares/handlerCors');
+const handlerCors = require('./middlewares/handlerCors');
 
 // routes
 const routerApp = require('./routes/index');
 
 const { NODE_ENV, MONGO_DB_URL } = process.env;
-
-// CORS
-// app.use(handlerCors);
 
 const { PORT = 3000 } = process.env;
 
@@ -46,6 +43,9 @@ mongoose.connect(dbUrl, {
 });
 
 const app = express();
+
+// CORS
+app.use(handlerCors);
 
 app.use(helmet());
 
