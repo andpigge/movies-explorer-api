@@ -1,6 +1,6 @@
 const allowedCors = [
-  'https://mestobackend.nomoredomains.club',
-  'https://mestofrontend.nomoredomains.club',
+  'http://movies-diploma-api.nomoredomains.monster',
+  'https://movies-diploma-api.nomoredomains.monster',
 ];
 
 // Обработка CORS

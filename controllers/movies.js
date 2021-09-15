@@ -27,6 +27,7 @@ const createMovie = (req, res, next) => {
 
   Movie.create({ ...body, owner: id })
     .then((movie) => {
+      console.log(movie);
       res.send(movie);
     })
     .catch((err) => {
