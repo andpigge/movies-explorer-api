@@ -27,7 +27,6 @@ const createMovie = (req, res, next) => {
 
   Movie.create({ ...body, owner: id })
     .then((movie) => {
-      console.log(movie);
       res.send(movie);
     })
     .catch((err) => {
@@ -39,9 +38,10 @@ const createMovie = (req, res, next) => {
 };
 
 const getMovie = (req, res, next) => {
-  // Вместо id вставляю модель users, с помощью метода populate, который принимает ссылку на модель
-  Movie.find({})
-    .populate('user')
+  // Ищу по полю owner
+  const owner = req.user._id;
+
+  Movie.find({ owner })
     .then((movies) => res.send(movies))
     .catch((err) => next(err.message));
 };
